@@ -13,16 +13,17 @@ const BODY_LIMIT: usize = 1_048_576;
 
 /// Middleware that validates the x-webflow-signature header
 #[derive(Clone)]
-pub struct WebflowService<S> {
+pub struct WebflowService<S, Secret> {
     pub(crate) inner: S,
-    pub secret: String
+    pub secret: Secret,
 }
 
-impl<S> Service<Request<Body>> for WebflowService<S>
+impl<S, Secret> Service<Request<Body>> for WebflowService<S, Secret>
 where
     S: Service<Request<Body>, Response = Response> + Clone + Send + 'static,
     S::Future: Send + 'static,
     S::Error: Into<BoxError>,
+    Secret: AsRef<[u8]> + Clone + Send + 'static,
 {
     type Response = Response;
     type Error = BoxError;
@@ -54,7 +55,7 @@ where
 
             let message_to_verify = format!("{timestamp}:{body_string}");
 
-            if compare_signatures(&message_to_verify, secret.as_bytes(), &signature) {
+            if compare_signatures(&message_to_verify, secret.as_ref(), &signature) {
                 let new_req = Request::from_parts(parts, Body::from(body_bytes));
                 inner.call(new_req).await.map_err(Into::into)
             } else {

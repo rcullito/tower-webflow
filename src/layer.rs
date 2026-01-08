@@ -12,15 +12,31 @@ pub async fn box_err_to_res(err: BoxError) -> Response {
 
 /// Layer that applies the [WebflowService] middleware.
 #[derive(Clone)]
-pub struct WebflowLayer{
-    webflow_form_secret: String,
+pub struct WebflowLayer<Secret> {
+    webflow_form_secret: Secret,
 }
 
-impl<S> Layer<S> for WebflowLayer
+impl<Secret> WebflowLayer<Secret> {
+    pub fn new(webflow_form_secret: Secret) -> Self
+    where
+        Secret: AsRef<[u8]> + Clone,
+    {
+        Self {
+            webflow_form_secret,
+        }
+    }
+}
+
+impl<S, Secret> Layer<S> for WebflowLayer<Secret>
+where
+    Secret: AsRef<[u8]> + Clone,
 {
-    type Service = WebflowService<S>;
+    type Service = WebflowService<S, Secret>;
 
     fn layer(&self, inner: S) -> Self::Service {
-        WebflowService { inner, secret: self.webflow_form_secret.clone() }
+        WebflowService {
+            inner,
+            secret: self.webflow_form_secret.clone(),
+        }
     }
 }

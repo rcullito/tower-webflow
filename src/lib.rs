@@ -6,10 +6,9 @@
 //! structs implement `tower_layer::Layer` and `tower_service::Service`, respectively, and so can
 //! be used as middleware for any servers that build on top of the Tower ecosystem.
 
-
 mod layer;
 mod service;
 mod util;
 
-pub use layer::WebflowLayer;
+pub use layer::{WebflowLayer, box_err_to_res};
 pub use service::WebflowService;

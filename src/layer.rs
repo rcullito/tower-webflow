@@ -18,8 +18,6 @@ pub struct WebflowLayer<Secret> {
 
 impl<Secret> WebflowLayer<Secret> {
     pub fn new(webflow_form_secret: Secret) -> Self
-    where
-        Secret: AsRef<[u8]> + Clone,
     {
         Self {
             webflow_form_secret,

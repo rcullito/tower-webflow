@@ -11,6 +11,7 @@ use tower::{BoxError, Service};
 
 const BODY_LIMIT: usize = 1_048_576;
 
+/// Middleware that validates the x-webflow-signature header
 #[derive(Clone)]
 pub struct WebflowService<S> {
     pub(crate) inner: S,

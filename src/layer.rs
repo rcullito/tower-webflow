@@ -10,6 +10,7 @@ pub async fn box_err_to_res(err: BoxError) -> Response {
     (StatusCode::BAD_REQUEST, err.to_string()).into_response()
 }
 
+/// Layer that applies the [WebflowService] middleware.
 #[derive(Clone)]
 pub struct WebflowLayer{
     webflow_form_secret: String,

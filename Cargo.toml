@@ -1,0 +1,20 @@
+[package]
+name = "tower-webflow"
+version = "0.1.0"
+edition = "2024"
+authors = ["Rob Culliton"]
+license = "MIT"
+repository = "https://github.com/rcullito/tower-webflow"
+description = "tower-webflow is a crate that simplifies validating webhooks received from Webflow"
+keywords = ["tower", "layer", "service", "webflow", "webhook"]
+categories = ["authentication", "web-programming", "cryptography"]
+
+[dependencies]
+axum = "0.8.8"
+hmac = "0.12.1"
+sha2 = "0.10.9"
+tower = "0.5.2"
+tracing = "0.1.44"
+
+[dev-dependencies]
+tokio = { version = "1.49.0", features = ["rt-multi-thread"]}

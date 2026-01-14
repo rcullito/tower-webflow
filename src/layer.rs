@@ -17,8 +17,7 @@ pub struct WebflowLayer<Secret> {
 }
 
 impl<Secret> WebflowLayer<Secret> {
-    pub fn new(webflow_form_secret: Secret) -> Self
-    {
+    pub fn new(webflow_form_secret: Secret) -> Self {
         Self {
             webflow_form_secret,
         }

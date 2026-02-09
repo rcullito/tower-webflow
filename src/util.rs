@@ -1,7 +1,7 @@
 use axum::http::{HeaderValue, request::Parts};
 use std::fmt::Write;
-use tower::BoxError;
 
+use anyhow::anyhow;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 type HmacSha256 = Hmac<Sha256>;
@@ -12,22 +12,26 @@ type Timestamp = String;
 pub struct WebflowHeaders(pub Signature, pub Timestamp);
 
 impl TryFrom<(&HeaderValue, &HeaderValue)> for WebflowHeaders {
-    type Error = BoxError;
+    type Error = anyhow::Error;
     fn try_from(t: (&HeaderValue, &HeaderValue)) -> Result<Self, Self::Error> {
         match (t.0.to_str(), t.1.to_str()) {
             (Ok(signature), Ok(timestamp)) => {
                 Ok(Self(signature.to_string(), timestamp.to_string()))
             }
-            _ => Err("signature and/or timestamp cannot be converted to a string".into()),
+            _ => Err(anyhow!(
+                "signature and/or timestamp cannot be converted to a string"
+            )),
         }
     }
 }
 
-pub fn from_request_parts(Parts { headers, .. }: &mut Parts) -> Result<WebflowHeaders, BoxError> {
+pub fn from_request_parts(Parts { headers, .. }: &mut Parts) -> anyhow::Result<WebflowHeaders> {
     headers
         .get("x-webflow-signature")
         .zip(headers.get("x-webflow-timestamp"))
-        .ok_or("`x-webflow-signature` and `x-webflow-timestamp` are required.")
+        .ok_or(anyhow!(
+            "`x-webflow-signature` and `x-webflow-timestamp` are required."
+        ))
         .map(TryInto::try_into)?
 }
 

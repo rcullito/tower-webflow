@@ -10,5 +10,5 @@ mod layer;
 mod service;
 mod util;
 
-pub use layer::{WebflowLayer, box_err_to_res};
+pub use layer::WebflowLayer;
 pub use service::WebflowService;

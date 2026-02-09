@@ -3,12 +3,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use tower::{BoxError, Layer};
-
-pub async fn box_err_to_res(err: BoxError) -> Response {
-    tracing::error!(?err, "middleware error");
-    (StatusCode::BAD_REQUEST, err.to_string()).into_response()
-}
+use tower::Layer;
 
 /// Layer that applies the [WebflowService] middleware.
 #[derive(Clone)]
